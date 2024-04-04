@@ -2,27 +2,28 @@ import React from "react"
 import { GetServerSideProps } from "next"
 import ReactMarkdown from "react-markdown"
 import Layout from "../../components/Layout"
-import { PostProps } from "../../components/Post"
+import { UserProps } from "../../components/User"
+import prisma from '../../../lib/prisma';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const post = {
-    id: "1",
-    title: "Prisma is the perfect ORM for Next.js",
-    content: "[Prisma](https://github.com/prisma/prisma) and Next.js go _great_ together!",
-    published: false,
-    author: {
-      name: "Nikolas Burk",
-      email: "burk@prisma.io",
+  const user = await prisma.user.findUnique({
+    where: {
+      id: String(params?.id),
     },
-  }
+    include: {
+      account: {
+        select: { name: true },
+      },
+    },
+  });
   return {
-    props: post,
-  }
+    props: user,
+  };
 }
 
-const Post: React.FC<PostProps> = (props) => {
+const Post: React.FC<UserProps> = (props) => {
   let title = props.title
-  if (!props.published) {
+  if (!props.active) {
     title = `${title} (Draft)`
   }
 
@@ -30,8 +31,8 @@ const Post: React.FC<PostProps> = (props) => {
     <Layout>
       <div>
         <h2>{title}</h2>
-        <p>By {props?.author?.name || "Unknown author"}</p>
-        <ReactMarkdown children={props.content} />
+        <p>By {props?.account?.name || "Unknown author"}</p>
+        <ReactMarkdown children={props.name} />
       </div>
       <style jsx>{`
         .page {
