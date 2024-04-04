@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next"
 import ReactMarkdown from "react-markdown"
 import Layout from "../../components/Layout"
 import { UserProps } from "../../components/User"
-import prisma from '../../../lib/prisma';
+import prisma from '../../lib/prisma';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const user = await prisma.user.findUnique({

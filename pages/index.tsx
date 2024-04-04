@@ -2,7 +2,7 @@ import React from "react"
 import { GetStaticProps } from "next"
 import Layout from "../components/Layout"
 import User, { UserProps } from "../components/User"
-import prisma from "../../lib/prisma";
+import prisma from "../lib/prisma";
 
 export const getStaticProps: GetStaticProps = async () => {
   const userList = await prisma.user.findMany({
